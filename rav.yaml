@@ -1,3 +1,5 @@
 scripts:
   notebook: jupyter notebook
   install: pip install -r requirements.txt
+  clean: 
+    - venv/bin/pre-commit run --all-files
