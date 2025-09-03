@@ -1,2 +1,3 @@
 scripts:
   notebook: jupyter notebook
+  install: pip install -r requirements.txt

@@ -1,3 +1,6 @@
 jupyter
 rav
 python-dotenv
+langchain
+langchain-community
+langchain-brightdata
