@@ -7,3 +7,4 @@ langchain-community
 langchain-brightdata
 langchain[openai]
 langchain[google-genai]
+langgraph
