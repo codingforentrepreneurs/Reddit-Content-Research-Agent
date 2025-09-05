@@ -1,9 +1,15 @@
 scripts:
   notebook: jupyter notebook
   install: pip install -r requirements.txt
+  makemigrations:
+    - cd src
+    - ../venv/bin/python manage.py migrate
   migrate:
     - cd src
     - ../venv/bin/python manage.py migrate
+  worker:
+    - cd src
+    - ../venv/bin/celery -A cfehome worker --beat -l info
   clean: 
     - venv/bin/pre-commit run --all-files
   docker_status:
