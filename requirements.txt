@@ -1,3 +1,8 @@
+Django
+Celery
+django-qstash
+django-celery-results
+django-celery-beat
 jupyter
 rav
 pre-commit
