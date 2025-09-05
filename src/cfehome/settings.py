@@ -99,6 +99,19 @@ if DATABASE_URL and DATABASE_URL != "":
         )
     }
 
+REDIS_URL = os.environ.get("REDIS_URL") or ""
+
+if REDIS_URL and REDIS_URL != "":
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": f"{REDIS_URL}",
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            }
+        }
+    }
+
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 

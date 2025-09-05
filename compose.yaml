@@ -10,7 +10,16 @@ services:
       - 5480:5432
     volumes:
       - pgdata:/var/lib/postgresql/data
-
+  redis-db:
+    image: redis:latest
+    # environment:
+    #    # - REDIS_DOCKER_URL: redis://redis-db:6379/
+    #    - REDIS_LOCAL_URL: redis://localhost:6380/
+    ports:
+      - 6380:6379
+    volumes:
+      - redisdata:/data
 
 volumes:
   pgdata:
+  redisdata:

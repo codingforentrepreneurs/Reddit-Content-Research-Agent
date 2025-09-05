@@ -6,6 +6,8 @@ scripts:
     - ../venv/bin/python manage.py migrate
   clean: 
     - venv/bin/pre-commit run --all-files
+  docker_status:
+    - docker compose ps
   docker_up:
     - docker compose up -d
   docker_down:

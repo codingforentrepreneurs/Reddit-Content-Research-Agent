@@ -4,6 +4,7 @@ django-qstash
 django-celery-results
 django-celery-beat
 dj-database-url
+django-redis
 jupyter
 rav
 pre-commit
@@ -15,3 +16,4 @@ langchain-brightdata
 langchain[openai]
 langchain[google-genai]
 langgraph
+redis
