@@ -3,9 +3,11 @@ Celery
 django-qstash
 django-celery-results
 django-celery-beat
+dj-database-url
 jupyter
 rav
 pre-commit
+psycopg[binary]
 python-dotenv
 langchain
 langchain-community

@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=pgdb
+      - POSTGRES_USER=pguser
+      - POSTGRES_PASSWORD=pgpassword
+      - DATABASE_URL=postgres://pguser:pgpassword@localhost:5480/pgdb
+    ports:
+      - 5480:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+
+volumes:
+  pgdata:
