@@ -31,10 +31,11 @@ DEBUG = str(os.environ.get("DJANGO_DEBUG")) == "1"
 # config("DJANGO_DEBUG", cast=bool, default=False)
 
 ALLOWED_HOSTS = []
+CSRF_TRUSTED_ORIGINS=[]
 
 if DEBUG:
-    ALLOWED_HOSTS.append("*")
-
+	ALLOWED_HOSTS.append(".hungrypy.com")
+	CSRF_TRUSTED_ORIGINS.append("https://*.hungrypy.com")
 
 # Application definition
 
