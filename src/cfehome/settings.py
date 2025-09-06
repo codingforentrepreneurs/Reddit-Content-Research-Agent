@@ -49,6 +49,9 @@ INSTALLED_APPS = [
     # third party
     'django_celery_beat',
     'django_celery_results',
+    "django_qstash",
+    "django_qstash.results",
+    "django_qstash.schedules",
     # internal
     'blog',
 ]
@@ -173,3 +176,15 @@ CELERY_BROKER_URL = REDIS_URL
 
 # this allows you to schedule items in the Django admin.
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
+
+
+
+###### Django Qstash Config
+
+
+QSTASH_URL=os.environ.get("QSTASH_URL")
+QSTASH_TOKEN=os.environ.get("QSTASH_TOKEN")
+QSTASH_CURRENT_SIGNING_KEY=os.environ.get("QSTASH_CURRENT_SIGNING_KEY")
+QSTASH_NEXT_SIGNING_KEY=os.environ.get("QSTASH_NEXT_SIGNING_KEY")
+DJANGO_QSTASH_DOMAIN=os.environ.get("DJANGO_QSTASH_DOMAIN")
+DJANGO_QSTASH_WEBHOOK_PATH=os.environ.get("DJANGO_QSTASH_WEBHOOK_PATH") or "/qstash/webhook/"
