@@ -3,9 +3,13 @@ import helpers.bd
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+
 
 from .models import BrightDataSnapshot
 from .tasks import get_snapshot_instance_progress_task
+
+BRIGHT_DATA_WEBHOOK_HANDLER_SECRET_KEY = settings.BRIGHT_DATA_WEBHOOK_HANDLER_SECRET_KEY
 
 @csrf_exempt
 def snapshot_webhook_handler(request):
@@ -18,7 +22,7 @@ def snapshot_webhook_handler(request):
     auth = request.headers.get("Authorization")
     if auth.startswith("Basic "):
         token = auth.split(" ")[1]
-        if token == "abc1234":
+        if token == f"{BRIGHT_DATA_WEBHOOK_HANDLER_SECRET_KEY}":
             data = {}
             try:
                 data = json.loads(request.body.decode('utf-8'))

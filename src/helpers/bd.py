@@ -9,7 +9,6 @@ from . import defaults
 BRIGHT_DATA_DATASET_ID="gd_lvz8ah06191smkebj4"
 
 
-
 def get_crawl_headers():
     return {
 	"Authorization": f"Bearer {settings.BRIGHT_DATA_REDDIT_SCRAPER_API_KEY}",
@@ -30,15 +29,15 @@ def perform_scrape_snapshot(subreddit_url, num_of_posts: int = 20, raw=False, us
     	"limit_per_input": "100",
     }
     if use_webhook:
+        auth_key = settings.BRIGHT_DATA_WEBHOOK_HANDLER_SECRET_KEY
         webhook_params = {
-            "auth_header": "Basic abc1234",
+            "auth_header": f"Basic {auth_key}",
             "notify": "https://hungrypy.com/webhooks/bd/scrape/",
             "format": "json",
             "uncompressed_webhook": "true",
             "include_errors": "true",
         }
         params.update(webhook_params)
-        print(params)
 
     fields = defaults.BRIGHT_DATA_REDDIT_FIELDS
     ignore_fields = ["comments", "related_posts"]
