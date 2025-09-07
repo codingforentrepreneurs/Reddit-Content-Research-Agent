@@ -17,7 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from snapshots.views import snapshot_webhook_handler
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("qstash/webhook/", include("django_qstash.urls")),
+    path("webhooks/bd/scrape/", snapshot_webhook_handler)
 ]
