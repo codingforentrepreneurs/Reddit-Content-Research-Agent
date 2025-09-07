@@ -13,7 +13,7 @@ def perform_reddit_scrape_task(subreddit_url, num_of_posts: int = 20, progress_c
     snapshot_id = data.get('snapshot_id')
     instance = BrightDataSnapshot.objects.create(
         snapshot_id=snapshot_id,
-        dataset_id=helpers.bd.BRIGH_DATA_DATASET_ID,
+        dataset_id=helpers.bd.BRIGHT_DATA_DATASET_ID,
         url=subreddit_url,
     )
     # start progress checking

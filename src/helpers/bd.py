@@ -6,7 +6,8 @@ from django.conf import settings
 
 from . import defaults
 
-BRIGH_DATA_DATASET_ID="gd_lvz8ah06191smkebj4"
+BRIGHT_DATA_DATASET_ID="gd_lvz8ah06191smkebj4"
+
 
 
 def get_crawl_headers():
@@ -16,10 +17,10 @@ def get_crawl_headers():
 }
 
 
-def perform_scrape_snapshot(subreddit_url, num_of_posts: int = 20, raw=False):
+def perform_scrape_snapshot(subreddit_url, num_of_posts: int = 20, raw=False, use_webhook=True):
     # BrightDataSnapshot = apps.get_model("snapshots", "BrightDataSnapshot")
     url = "https://api.brightdata.com/datasets/v3/trigger"
-    dataset_id =  BRIGH_DATA_DATASET_ID
+    dataset_id =  BRIGHT_DATA_DATASET_ID
     headers = get_crawl_headers()
     params = {
     	"dataset_id": dataset_id,
@@ -28,6 +29,16 @@ def perform_scrape_snapshot(subreddit_url, num_of_posts: int = 20, raw=False):
     	"discover_by": "subreddit_url",
     	"limit_per_input": "100",
     }
+    if use_webhook:
+        webhook_params = {
+            "auth_header": "Basic abc1234",
+            "notify": "https://hungrypy.com/webhooks/bd/scrape/",
+            "format": "json",
+            "uncompressed_webhook": "true",
+            "include_errors": "true",
+        }
+        params.update(webhook_params)
+        print(params)
 
     fields = defaults.BRIGHT_DATA_REDDIT_FIELDS
     ignore_fields = ["comments", "related_posts"]
@@ -70,7 +81,7 @@ def download_snapshot(snapshot_id: str) -> dict:
     response = requests.get(url, headers=headers, params=params)
     msg = response.text
     if response.status_code not in range(200, 299):
-        dataset_id =  BRIGH_DATA_DATASET_ID
+        dataset_id =  BRIGHT_DATA_DATASET_ID
         qs = BrightDataSnapshot.objects.filter(
             dataset_id=dataset_id,
             snapshot_id=snapshot_id

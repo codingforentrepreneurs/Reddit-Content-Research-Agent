@@ -1,7 +1,11 @@
 import json
+import helpers.bd
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+
+from .models import BrightDataSnapshot
+from .tasks import get_snapshot_instance_progress_task
 
 @csrf_exempt
 def snapshot_webhook_handler(request):
@@ -20,6 +24,21 @@ def snapshot_webhook_handler(request):
                 data = json.loads(request.body.decode('utf-8'))
             except:
                 pass
-            print(data)
+            snapshot_id = data.get("snapshot_id")
+            if snapshot_id:
+                qs = BrightDataSnapshot.objects.filter(
+                    snapshot_id=snapshot_id,
+                    dataset_id=helpers.bd.BRIGHT_DATA_DATASET_ID,
+                )
+                if not qs.exists():
+                    instance = BrightDataSnapshot.objects.create(
+                        snapshot_id=snapshot_id,
+                        dataset_id=helpers.bd.BRIGHT_DATA_DATASET_ID,
+                    )
+                    get_snapshot_instance_progress_task(instance.id)
+                else:
+                    instance_ids = qs.values_list("id", flat=True) 
+                    for instance_id in instance_ids:
+                        get_snapshot_instance_progress_task(instance_id)
 
     return HttpResponse("OK")
