@@ -4,6 +4,7 @@ import requests
 from django.apps import apps
 from django.conf import settings
 
+from . import defaults
 
 BRIGH_DATA_DATASET_ID="gd_lvz8ah06191smkebj4"
 
@@ -27,9 +28,17 @@ def perform_scrape_snapshot(subreddit_url, num_of_posts: int = 20, raw=False):
     	"discover_by": "subreddit_url",
     	"limit_per_input": "100",
     }
-    data = [
-    	{"url": f"{subreddit_url}","sort_by":"Top","sort_by_time":"Today","num_of_posts":num_of_posts},
-    ]
+
+    fields = defaults.BRIGHT_DATA_REDDIT_FIELDS
+    ignore_fields = ["comments", "related_posts"]
+    
+    data = {
+        "input": [
+            {"url": f"{subreddit_url}", 
+            "sort_by":"Top","sort_by_time":"Today","num_of_posts":num_of_posts},
+        ],
+        "custom_output_fields": [x for x in fields if not x in ignore_fields],
+    }
     
     response = requests.post(url, headers=headers, params=params, json=data)
     response.raise_for_status()

@@ -6,18 +6,18 @@ from celery import shared_task
 
 
 @stashed_task
-def perform_reddit_scrape_task(subreddit_url, num_of_posts: int = 20):
+def perform_reddit_scrape_task(subreddit_url, num_of_posts: int = 20, progress_countdown=300):
     BrightDataSnapshot = apps.get_model("snapshots", "BrightDataSnapshot")
     data = helpers.bd.perform_scrape_snapshot(subreddit_url, num_of_posts = num_of_posts, raw=True)
     snapshot_id = data.get('snapshot_id')
-    instance_id = BrightDataSnapshot.objects.create(
+    instance = BrightDataSnapshot.objects.create(
         snapshot_id=snapshot_id,
         dataset_id=helpers.bd.BRIGH_DATA_DATASET_ID,
         status="Unknown",
         url=subreddit_url,
     )
     # start progress checking
-    get_snapshot_instance_progress_task.apply_async(args=(instance_id,), countdown=300)
+    get_snapshot_instance_progress_task.apply_async(args=(instance.id,), countdown=progress_countdown)
     return snapshot_id
 
 
