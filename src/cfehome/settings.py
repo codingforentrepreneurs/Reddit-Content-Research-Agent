@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     # internal
     'blog',
     'reddit',
+    'snapshots'
 ]
 
 MIDDLEWARE = [
