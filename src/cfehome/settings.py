@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     # internal
     'blog',
     'reddit',
-    'snapshots'
+    'snapshots',
 ]
 
 MIDDLEWARE = [
@@ -190,3 +190,11 @@ QSTASH_CURRENT_SIGNING_KEY=os.environ.get("QSTASH_CURRENT_SIGNING_KEY")
 QSTASH_NEXT_SIGNING_KEY=os.environ.get("QSTASH_NEXT_SIGNING_KEY")
 DJANGO_QSTASH_DOMAIN=os.environ.get("DJANGO_QSTASH_DOMAIN")
 DJANGO_QSTASH_WEBHOOK_PATH=os.environ.get("DJANGO_QSTASH_WEBHOOK_PATH") or "/qstash/webhook/"
+
+
+
+
+###### Bright Data Config
+
+BRIGHT_DATA_REDDIT_SCRAPER_API_KEY = os.environ.get("BRIGHT_DATA_REDDIT_SCRAPER_API_KEY")
+BRIGHT_DATA_SERP_API_KEY=  os.environ.get("BRIGHT_DATA_SERP_API_KEY")
