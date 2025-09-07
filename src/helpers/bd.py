@@ -50,12 +50,14 @@ def get_snapshot_progress(snapshot_id: str) -> bool:
     data = response.json()
     snapshot_id = data.get('snapshot_id')
     dataset_id= data.get('dataset_id')
-    status =  data.get('status')
+    status = data.get('status')
+    records = data.get('records') or 0
     BrightDataSnapshot.objects.update_or_create(
         snapshot_id=snapshot_id,
         dataset_id=dataset_id,
         defaults = {
-            "status": status
+            "status": status,
+            "records": records,
         }
     )
     return status == 'ready'
