@@ -12,6 +12,12 @@ class BrightDataSnapshot(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     progress_check_count = models.IntegerField(default=0)
+    last_result_sync = models.DateTimeField(
+        auto_now=False,
+        auto_now_add=False,
+        null=True, 
+        blank=True
+    )
     last_status_changed_at = models.DateTimeField(
         auto_now=False,
         auto_now_add=False,

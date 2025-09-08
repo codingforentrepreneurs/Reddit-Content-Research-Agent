@@ -1,5 +1,8 @@
+from datetime import timedelta
+from django.utils.html import CountsDict
 import helpers.bd 
 from django.apps import apps
+from django.utils import timezone
 
 from django_qstash import stashed_task
 from celery import shared_task
@@ -55,3 +58,42 @@ def get_snapshot_instance_progress_task(instance_id: int) -> bool:
         )
         return 
     return status == 'ready'
+
+
+
+
+@stashed_task
+def download_snapshot_to_reddit_post(instance_id:int = None):
+    from reddit import services as reddit_db_services
+    BrightDataSnapshot = apps.get_model("snapshots", "BrightDataSnapshot")
+    try:
+        instance = BrightDataSnapshot.objects.get(id=instance_id)
+    except:
+        return 
+    try:
+        reddit_results = helpers.bd.download_snapshot(instance.snapshot_id)
+    except:
+        return
+    reddit_db_services.handle_reddit_thread_results(reddit_results)
+
+
+@stashed_task
+def snapshots_download_sync(download_all_available=True):
+    BrightDataSnapshot = apps.get_model("snapshots", "BrightDataSnapshot")
+    now = timezone.now()
+    last_week = now - timedelta(days=8)
+    filters = {
+        "status": "ready",
+        "records__gt": 0,
+    }
+    if not download_all_available:
+        filters[ "last_result_sync__lte"] = last_week
+    qs = BrightDataSnapshot.objects.filter(
+            **filters
+        ).order_by('-id')
+    for idx, instance in enumerate(qs):
+        delay_delta = 30 * idx
+        download_snapshot_to_reddit_post.apply_async(kwargs = {
+            "instance_id": instance.id,
+        }, countdown=delay_delta)
+    qs.update(last_result_sync=timezone.now())

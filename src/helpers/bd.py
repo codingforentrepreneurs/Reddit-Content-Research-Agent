@@ -1,7 +1,6 @@
 
 import requests
 
-from django.apps import apps
 from django.conf import settings
 
 from . import defaults
@@ -80,24 +79,11 @@ def get_snapshot_progress(snapshot_id: str, raw=False) -> bool:
 
 
 def download_snapshot(snapshot_id: str) -> dict:
-    BrightDataSnapshot = apps.get_model("snapshots", "BrightDataSnapshot")
     url = f"https://api.brightdata.com/datasets/v3/snapshot/{snapshot_id}"
     headers = get_crawl_headers()
     params = {
         "format": "json"
     }
     response = requests.get(url, headers=headers, params=params)
-    msg = response.text
-    if response.status_code not in range(200, 299):
-        dataset_id =  BRIGHT_DATA_DATASET_ID
-        qs = BrightDataSnapshot.objects.filter(
-            dataset_id=dataset_id,
-            snapshot_id=snapshot_id
-            
-        )
-        qs.update(error_msg=msg)
-        return {}
-    if f'{msg}'.lower() == "snapshot is empty":
-        return {}
-    data = response.json()
-    return data
+    response.raise_for_status()
+    return response.json()
