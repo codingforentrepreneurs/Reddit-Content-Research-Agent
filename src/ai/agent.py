@@ -26,3 +26,24 @@ def perform_get_reddit_communites(query):
     )
     community_data = [x.model_dump() for x in results["structured_response"].communities]
     return community_data
+
+
+
+
+@lru_cache
+def extract_topics_agent(user_query:str):
+    model = llm.get_gemini_model()
+    topic_agent = create_react_agent(
+        model=model,  
+        tools=[],
+        prompt=prompts.topic_extraction_prompt,
+        response_format=schemas.TopicListSchema
+    )
+
+    # Run the agent
+    topic_results = topic_agent.invoke(
+        {"messages": [{"role": "user", "content": f"{user_query}"}]},
+        stream_mode="values"
+    )
+
+    return [x.model_dump() for x in topic_results["structured_response"].topics]
