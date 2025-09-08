@@ -16,7 +16,13 @@ def get_crawl_headers():
 }
 
 
-def perform_scrape_snapshot(subreddit_url, num_of_posts: int = 20, raw=False, use_webhook=True):
+def perform_scrape_snapshot(
+        subreddit_url, 
+        num_of_posts: int = 20, 
+        raw=False, 
+        use_webhook=True,
+        sort_by_time="This Week"
+    ):
     # BrightDataSnapshot = apps.get_model("snapshots", "BrightDataSnapshot")
     url = "https://api.brightdata.com/datasets/v3/trigger"
     dataset_id =  BRIGHT_DATA_DATASET_ID
@@ -41,12 +47,14 @@ def perform_scrape_snapshot(subreddit_url, num_of_posts: int = 20, raw=False, us
         params.update(webhook_params)
 
     fields = defaults.BRIGHT_DATA_REDDIT_FIELDS
-    ignore_fields = ["comments", "related_posts"]
-    
+    ignore_fields = [] # cost
+    sort_options = ["Today", "This Week", "This Month","This Year", "All Time"]
+    if sort_by_time not in sort_options:
+        sort_by_time = "This Month"
     data = {
         "input": [
             {"url": f"{subreddit_url}", 
-            "sort_by":"Top","sort_by_time":"Today","num_of_posts":num_of_posts},
+            "sort_by":"Top","sort_by_time":f"{sort_by_time}","num_of_posts":num_of_posts},
         ],
         "custom_output_fields": [x for x in fields if not x in ignore_fields],
     }
