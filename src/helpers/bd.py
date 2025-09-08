@@ -33,6 +33,7 @@ def perform_scrape_snapshot(subreddit_url, num_of_posts: int = 20, raw=False, us
         webhook_params = {
             "auth_header": f"Basic {auth_key}",
             "notify": "https://hungrypy.com/webhooks/bd/scrape/",
+            "endpoint": "https://hungrypy.com/webhooks/bd/reddit/",
             "format": "json",
             "uncompressed_webhook": "true",
             "include_errors": "true",

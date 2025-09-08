@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 
+from reddit import services as reddit_db_services
 
 from .models import BrightDataSnapshot
 from .tasks import get_snapshot_instance_progress_task
@@ -45,4 +46,23 @@ def snapshot_webhook_handler(request):
                     for instance_id in instance_ids:
                         get_snapshot_instance_progress_task(instance_id)
 
+    return HttpResponse("OK")
+
+
+
+@csrf_exempt
+def reddit_post_webhook_handler(request):
+    if request.method != "POST":
+        return HttpResponse("OK")
+    auth = request.headers.get("Authorization")
+    if auth.startswith("Basic "):
+        token = auth.split(" ")[1]
+        if token == f"{BRIGHT_DATA_WEBHOOK_HANDLER_SECRET_KEY}":
+            data = []
+            try:
+                data = json.loads(request.body.decode('utf-8'))
+            except:
+                pass
+            pass
+            reddit_db_services.handle_reddit_thread_results(reddit_results=data)
     return HttpResponse("OK")
