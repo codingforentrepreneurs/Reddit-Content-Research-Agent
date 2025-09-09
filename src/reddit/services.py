@@ -16,6 +16,8 @@ def handle_reddit_thread_results(reddit_results:list = []):
     for thread in reddit_results:
         post_id = thread.get("post_id")
         url = thread.get("url")
+        if not all([url, post_id]):
+            continue
         update_data = {k:v for k, v in thread.items() if k in valid_fields}
         instance, _ = RedditPost.objects.update_or_create(
             post_id=post_id,
