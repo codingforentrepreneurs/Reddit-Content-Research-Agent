@@ -4,7 +4,10 @@ from django.contrib import admin
 from .models import RedditCommunity, RedditPost
 
 class RedditCommunityAdmin(admin.ModelAdmin):
-    list_display = ['name', 'subreddit_slug', 'member_count']
+    list_display = ['subreddit_slug', 'member_count', 'trackable', 'active']
+    search_fields = ['name', 'subreddit_slug', 'url']
+    list_filter = ['trackable', 'active']
+    list_editable = ['trackable', 'active']
 
 admin.site.register(RedditCommunity, RedditCommunityAdmin)
 

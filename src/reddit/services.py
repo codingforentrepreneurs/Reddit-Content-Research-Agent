@@ -44,6 +44,9 @@ def handle_reddit_community_scrape_automation(reddit_community_instance, created
     active = reddit_community_instance.active 
     if not active and not force_scrape:
         return
+    trackable = reddit_community_instance.trackable
+    if not trackable and not force_scrape:
+        return 
     now = timezone.now()
     last_scrape_event = reddit_community_instance.last_scrape_event
     last_event_delta = None

@@ -1,12 +1,17 @@
 from django.db import models
 
 
+class RedditCommunityManager(models.Manager):
+    def trackable(self):
+        return self.get_queryset().filter(active=True, trackable=True)
+
 class RedditCommunity(models.Model):
     url = models.URLField(db_index=True, help_text="The complete url of the reddit community")
     name = models.TextField(null=True, blank=True, help_text="Formatted name for Reddit")
     subreddit_slug= models.CharField(max_length=400, null=True, blank=True, help_text="The slug of the subbreddit such as r/python or r/web or r/trending")
     member_count = models.IntegerField(blank=True, null=True, help_text="Current member count, if available.")
     active = models.BooleanField(default=True, help_text="Is this searchable?")
+    trackable = models.BooleanField(default=False, help_text="Is this currently being tracked")
     last_scrape_event = models.DateTimeField(
         auto_now_add=False, 
         auto_now=False, 
@@ -15,6 +20,8 @@ class RedditCommunity(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = RedditCommunityManager()
 
     # def save(self, *args, **kwargs):
     #     is_valid_reddit_url = ai.check_url()
