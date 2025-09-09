@@ -7,8 +7,18 @@ class RedditCommunity(models.Model):
     subreddit_slug= models.CharField(max_length=400, null=True, blank=True, help_text="The slug of the subbreddit such as r/python or r/web or r/trending")
     member_count = models.IntegerField(blank=True, null=True, help_text="Current member count, if available.")
     active = models.BooleanField(default=True, help_text="Is this searchable?")
+    last_scrape_event = models.DateTimeField(
+        auto_now_add=False, 
+        auto_now=False, 
+        null=True, 
+        blank=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    # def save(self, *args, **kwargs):
+    #     is_valid_reddit_url = ai.check_url()
+    #     self.active = False
 
 # Create your models here.
 class RedditPost(models.Model):
@@ -24,7 +34,7 @@ class RedditPost(models.Model):
     num_comments = models.IntegerField(blank=True, null=True)
     date_posted = models.DateTimeField(
         auto_now_add=False, 
-        auto_now=True, 
+        auto_now=False, 
         null=True, 
         blank=True
     )
