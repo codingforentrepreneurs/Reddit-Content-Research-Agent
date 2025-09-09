@@ -54,8 +54,10 @@ INSTALLED_APPS = [
     "django_qstash.schedules",
     # internal
     'blog',
+    'queries',
     'reddit',
     'snapshots',
+    'topics',
 ]
 
 MIDDLEWARE = [
