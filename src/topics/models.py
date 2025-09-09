@@ -1,6 +1,9 @@
 from django.db import models
 
+
 from queries.models import Query
+
+from .tasks import topic_to_reddit_community_task
 # Create your models here.
 # Create your models here.
 class Topic(models.Model):
@@ -10,3 +13,7 @@ class Topic(models.Model):
     slug = models.SlugField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        topic_to_reddit_community_task.delay(self.name)

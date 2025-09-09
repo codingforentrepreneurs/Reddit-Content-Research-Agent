@@ -1,3 +1,5 @@
+import ai
+
 from functools import lru_cache
 from datetime import timedelta
 import helpers.bd
@@ -24,26 +26,26 @@ def handle_reddit_thread_results(reddit_results:list = []):
         if not all([url, post_id]):
             continue
         update_data = {k:v for k, v in thread.items() if k in valid_fields}
-        instance, _ = RedditPost.objects.update_or_create(
+        reddit_post_instance, _ = RedditPost.objects.update_or_create(
             post_id=post_id,
             url=url,
             defaults=update_data
         )
-        ids.append(instance.id)
+        ids.append(reddit_post_instance.id)
     return ids
 
 
 
 
-def handle_reddit_community_scrape_automation(instance, created=False, force_scrape=False, verbose=False):
+def handle_reddit_community_scrape_automation(reddit_community_instance, created=False, force_scrape=False, verbose=False):
     # print(instance.pk, instance.url)
-    instance.refresh_from_db()
-    url = instance.url
-    active = instance.active 
+    reddit_community_instance.refresh_from_db()
+    url = reddit_community_instance.url
+    active = reddit_community_instance.active 
     if not active and not force_scrape:
         return
     now = timezone.now()
-    last_scrape_event = instance.last_scrape_event
+    last_scrape_event = reddit_community_instance.last_scrape_event
     last_event_delta = None
     min_last_event_delta = timedelta(minutes=5)
     if last_scrape_event is not None:
@@ -54,9 +56,9 @@ def handle_reddit_community_scrape_automation(instance, created=False, force_scr
     if force_scrape:
         scrape_ready = True
     if verbose:
-        print("Ready to scrape",scrape_ready, instance.url)
+        print("Ready to scrape",scrape_ready, reddit_community_instance.url)
         print("Was jsut created", created)
-    qs = RedditCommunity.objects.filter(pk=instance.pk)
+    qs = RedditCommunity.objects.filter(pk=reddit_community_instance.pk)
     qs.update(last_scrape_event = timezone.now())
     if scrape_ready and not created:
         if verbose:
@@ -79,3 +81,19 @@ def handle_reddit_community_scrape_automation(instance, created=False, force_scr
             )
     if verbose:
         print("---done---\n")
+
+
+
+
+def handle_topic_to_reddit_community(topic_name, verbose=True):
+    if verbose:
+        print(f"Researching {topic_name}")
+    community_data = ai.perform_get_reddit_communites(topic_name)
+    for community in community_data:
+        url = community.pop("url")
+        if verbose:
+            print(url)
+        RedditCommunity.objects.update_or_create(
+            url = url,
+            defaults = community
+        )
